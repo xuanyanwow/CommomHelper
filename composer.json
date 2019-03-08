@@ -1,0 +1,19 @@
+{
+    "name": "siam/commom-helper",
+    "description": "Siam PHP",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Siam",
+            "email": "59419979@qq.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Siam\\" : "src/siam"
+        }
+    }
+}
