@@ -8,44 +8,36 @@
 
 namespace Siam;
 
+use Siam\AbstractInterface\LoggerAbstractInterface;
+use Siam\Component\Di;
 use Siam\Component\Singleton;
+use Siam\Trace\LoggerFile;
 
-class Logger
+class Logger implements LoggerAbstractInterface
 {
-
-    protected $filePath = "./";
     use Singleton;
 
     /**
-     * 设置log目录
-     * @param $path
+     * @var LoggerAbstractInterface
      */
-    public function setFilePath($path)
+    private $logger;
+
+    function __construct(LoggerAbstractInterface $logger = null)
     {
-        $this->filePath = $path;
-        $this->checkPathDir();
+        if ($logger === null) {
+            $logger = new LoggerFile(Di::getInstance()->get('CONFIG_LOG_DIR'));
+        }
+        $this->logger = $logger;
     }
 
     /**
-     * 检查目录是否已经创建
-     */
-    private function checkPathDir()
-    {
-        if (!is_dir($this->filePath)) mkdir($this->filePath);
-    }
-
-    /**
-     * 记录log
-     * @param string $str
+     * @param $str
      * @param string $level
      * @return bool
      */
-    public function log($str,  $level = 'debug')
+    public function log($str, $level = 'debug')
     {
-        $temPath = $this->filePath.$level.".log";
-        return file_put_contents($temPath, date("Y-m-d H:i:s") . "\n" . $str . "\n", FILE_APPEND)  ? true : false;
+        // TODO: Implement log() method.
+        return $this->logger->log($str, $level);
     }
-
-
-
 }
