@@ -2,7 +2,7 @@
 
 #### 安装教程
 ```
-composer requires siam/commom-helper
+composer require siam/commom-helper
 ```
 
 #### 运行demo
