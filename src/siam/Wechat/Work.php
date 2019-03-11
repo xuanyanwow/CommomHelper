@@ -6,12 +6,13 @@
  * Time: 14:27
  */
 
-namespace app\common\controller\wechat;
+namespace Siam\Wechat;
 
+use Siam\Component\Singleton;
 
 class Work
 {
-    public static $instance;
+    use Singleton;
 
     private function __construct($config = [])
     {
@@ -21,19 +22,6 @@ class Work
     private function __clone()
     {
         // TODO: Implement __clone() method.
-    }
-
-    /**
-     * 获取实例
-     * @param array $config
-     * @return work
-     */
-    public static function instance($config = [])
-    {
-        if (!self::$instance instanceof self) {
-            self::$instance = new self($config);
-        }
-        return self::$instance;
     }
 
     /**

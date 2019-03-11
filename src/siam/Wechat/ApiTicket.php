@@ -6,19 +6,43 @@
  * Time: 16:12
  */
 
-namespace app\common\controller\wechat;
+namespace Siam\Wechat;
 
-
-use app\common\controller\Api;
-use app\common\controller\Curl;
-use think\Cache;
+use Siam\Api;
+use Siam\Component\Singleton;
+use Siam\Curl;
 
 class ApiTicket
 {
-    public $data;
-    public $token;
-    public $needEcho = true;
-    public static $GET_TICKET = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=__TOKEN__&type=jsapi";
+    use Singleton;
+    protected $data;
+    protected $token;
+    protected $needEcho = true;
+    protected static $GET_TICKET = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=__TOKEN__&type=jsapi";
+
+    /**
+     * 设置appid
+     * @param $appid
+     */
+    public function setAppid($appid){
+        $this->data['mism_appid'] = $appid;
+    }
+
+    /**
+     * 设置token
+     * @param $token
+     */
+    public function setToken($token){
+        $this->token = $token;
+    }
+
+    /**
+     * 设置是否需要输出json 不是则返回
+     * @param bool $need
+     */
+    public function setEcho($need = true){
+        $this->needEcho = $need;
+    }
 
     public function getTicket()
     {
@@ -30,7 +54,7 @@ class ApiTicket
             $ticket = $this->getByHttp();
         }
         if ($this->needEcho) {
-            Api::returnJson('200', ['ticket' => $ticket], '获取成功');
+            Api::json('200', ['data' => ['ticket' => $ticket]], '获取成功');
         }
         return $ticket;
     }
@@ -41,8 +65,9 @@ class ApiTicket
      */
     private function getByCache()
     {
-        if (empty($this->data['mism_appid'])) Api::returnJson('500', [], 'mism_appid为空');
-        $cache = Cache::tag('ticket')->get($this->data['mism_appid'] . "_ticket");
+        if (empty($this->data['mism_appid'])) Api::json('500', [], 'mism_appid为空');
+        // $cache = Cache::tag('ticket')->get($this->data['mism_appid'] . "_ticket");
+        $cache = false;
         return $cache;
     }
 
@@ -52,18 +77,22 @@ class ApiTicket
      */
     private function getByHttp()
     {
-        if (empty($this->token)) Api::returnJson('500', [], 'token为空');
+        if (empty($this->token)) Api::json('500', [], 'token为空');
 
         $url = str_replace("__TOKEN__", $this->token, self::$GET_TICKET);
 
         $CURL = Curl::getInstance();
-        $res  = $CURL->send($url);
+        try {
+            $res = $CURL->send($url);
+        } catch (\Exception $e) {
+            Api::json('500', [], '请求ticket失败');
+        }
         $res  = json_decode($res, true);
 
         $ticket = $res['ticket'];
         if ($ticket) {
             $cacheName = $this->data['mism_appid'] . "_ticket";
-            Cache::tag('ticket')->set($cacheName, $ticket, 7200);
+            // Cache::tag('ticket')->set($cacheName, $ticket, 7200);
             return $ticket;
         }
         return false;
