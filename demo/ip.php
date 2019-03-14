@@ -14,6 +14,6 @@ echo $ipClass->getIp();
 echo "\n<br/>";
 
 # check
-$res = $ipClass->checkIp(['127.0.0.3', '127.0.0.2'], $ipClass->getIp());
+$res = $ipClass->checkIp(['127.0.0.1', '127.0.0.2'], $ipClass->getIp());
 
 var_dump($res);
