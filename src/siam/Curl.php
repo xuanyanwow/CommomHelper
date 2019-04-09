@@ -96,6 +96,7 @@ class Curl
         $response = curl_exec($curl);  // 执行一个cURL会话并且获取相关回复
 
         if ($response === false) {
+            curl_close($curl);  // 释放cURL句柄,关闭一个cURL会话
             throw new \Exception("curlError||" . curl_errno($curl) . "||" . curl_error($curl));
         }
 
