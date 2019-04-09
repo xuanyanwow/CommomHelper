@@ -22,26 +22,26 @@ class Base64Url
             return NULL;
         }
         $base64 = base64_encode($data);
-        $base64 = str_replace($base64, "/", "_");
-        $base64 = str_replace($base64, "+", "_a_");
-        $base64 = str_replace($base64, "=", "_b_");
+        $base64 = str_replace("/", "_",$base64);
+        $base64 = str_replace("+", "_a_",$base64);
+        $base64 = str_replace("=", "_b_",$base64);
         return $base64;
     }
 
     /**
      * 解密
-     * @param $data
+     * @param $str
      * @return mixed|null|string
      */
-    static function decode($data)
+    static function decode($str)
     {
-        if (!is_string($data)){
+        if (!is_string($str)){
             return NULL;
         }
-        $str = base64_encode($data);
-        $str = str_replace($str, "_", "/");
-        $str = str_replace($str, "_a_", "+");
-        $str = str_replace($str, "_b_", "=");
+        $str = str_replace("_b_", "=",$str);
+        $str = str_replace("_a_", "+",$str);
+        $str = str_replace("_", "/",$str);
+        $str = base64_decode($str);
         return $str;
     }
 }
