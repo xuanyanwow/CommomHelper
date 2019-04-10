@@ -10,7 +10,10 @@
         }
     ],
     "minimum-stability": "dev",
-    "require": {},
+    "require": {
+      "ext-json": "*",
+      "ext-openssl": "*"
+    },
     "autoload": {
         "psr-4": {
             "Siam\\" : "src/siam"
