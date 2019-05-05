@@ -37,4 +37,37 @@ class Xml
         }
         return $str;
     }
+
+
+    function xmlToArray($xml)
+    {
+        // 清理替换没有闭合标签的
+        $xml = preg_replace('/\<(\w+)\/\>/','<$1></$1>',$xml);
+
+        $object = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
+        $array  = json_decode(json_encode($object),true);
+        $array  = $this->_checkType($array);
+        return $array;
+    }
+
+    /**
+     * 遍历检查数组格式，如果是空数组则转为字符串
+     * @param $array
+     * @return array
+     */
+    protected function _checkType($array){
+        $tem = [];
+        foreach ($array as $key => $value){
+            if (is_array($value)){
+                if (empty($value)){
+                    $tem[$key] = "";
+                }else{
+                    $tem[$key] = $this->_checkType($value);
+                }
+            }else{
+                $tem[$key] = $value;
+            }
+        }
+        return $tem;
+    }
 }
