@@ -17,7 +17,7 @@ class JWT
 
     private $alg = "AES";
     private $iss = "Siam";
-    private $exp = "7200"; // 默认2个小时
+    private $exp = 7200; // 默认2个小时
     private $sub;
     private $nbf;
     private $with = [];
@@ -83,7 +83,7 @@ class JWT
     {
         $time       = time();
         $tem['iss'] = $this->iss;
-        if (!empty($this->exp)) $tem['exp'] = $time + $this->exp;
+        if (!empty($this->exp)) $tem['exp'] = ($time + $this->exp);
         $tem['sub'] = $this->sub;
         $tem['iat'] = $time;
         $tem['nbf'] = !empty($this->nbf) ? $this->nbf : $time; // 在此之前不可用
@@ -108,15 +108,13 @@ class JWT
     private function clear()
     {
         $this->alg        = "AES";
-        $this->iss        = "Siam";
-        $this->exp        = "7200"; // 默认2个小时
+        $this->exp        = 7200; // 默认2个小时
         $this->sub        = "";
         $this->nbf        = "";
         $this->with       = [];
         $this->jwt        = "";
         $this->dataStr    = "";
         $this->headStr    = "";
-        $this->secret_key = 'siamkey';
         $this->signStr    = "";
     }
 
@@ -141,8 +139,8 @@ class JWT
 
         $temArr = explode('.', $str);
 
-        if (empty($temArr) && !is_array($temArr)) require 'STR ERROR';
-        if (count($temArr) != 3) require 'STR ERROR';
+        if (empty($temArr) && !is_array($temArr)) return 'STR ERROR';
+        if (count($temArr) != 3) return 'STR ERROR';
 
         $this->headStr = $temArr[0];
         // 解head 拿算法
