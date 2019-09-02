@@ -174,7 +174,11 @@ class Work
             $res = curl_exec($ch);
             curl_close($ch);
             $openid = json_decode($res, true);
-//            file_put_contents('log/getOpenid.txt', date('Y-m-d H:i:s')."\n".$res, FILE_APPEND);
+            
+            if (!isset($openid['openid])){
+                $this->lastData = $openid;
+                return false;
+            }
             return $openid['openid'];
         }
     }
