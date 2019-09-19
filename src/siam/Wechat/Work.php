@@ -161,6 +161,7 @@ class Work
             $scope = 'snsapi_base';
             $url   = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' . $APPID . '&redirect_uri=' . urlencode($REDIRECT_URI) . '&response_type=code&scope=' . $scope . '&state=wx' . '#wechat_redirect';
             header('Location:' . $url);
+			exit();
         } else {
             $code = $_GET["code"];
             $url  = "https://api.weixin.qq.com/sns/oauth2/access_token?appid={$APPID}&secret={$secret}&code={$code}&grant_type=authorization_code";
