@@ -37,7 +37,6 @@ class Logger implements LoggerAbstractInterface
      */
     public function log($str, $level = 'debug')
     {
-        // TODO: Implement log() method.
         return $this->logger->log($str, $level);
     }
 }

@@ -23,6 +23,7 @@ class Curl
     /**
      * 设置Heard头
      * @Curl
+     * @param $data
      */
     public function setHead($data)
     {
@@ -32,6 +33,7 @@ class Curl
     /**
      * 设置超时
      * @Curl
+     * @param $s
      */
     public function setTimeout($s)
     {
@@ -97,7 +99,7 @@ class Curl
 
         if ($response === false) {
             curl_close($curl);  // 释放cURL句柄,关闭一个cURL会话
-            throw new \Exception("curlError||" . curl_errno($curl) . "||" . curl_error($curl));
+            throw new \Exception("[". curl_errno($curl) . "]" . curl_error($curl));
         }
 
         $this->responseHead = curl_getinfo($curl);

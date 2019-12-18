@@ -133,14 +133,25 @@ class JWT
         return $str;
     }
 
+    /**
+     * @param $str
+     * @return mixed
+     * @throws \Exception
+     */
     function decode($str)
     {
-        if ($str == '') return "STR NULL";
+        if ($str == '') {
+            throw new \Exception("token is null");
+        }
 
         $temArr = explode('.', $str);
 
-        if (empty($temArr) && !is_array($temArr)) return 'STR ERROR';
-        if (count($temArr) != 3) return 'STR ERROR';
+        if (empty($temArr) && !is_array($temArr)) {
+            throw new \Exception("token sign error");
+        }
+        if (count($temArr) != 3) {
+            throw new \Exception("token sign error");
+        }
 
         $this->headStr = $temArr[0];
         // 解head 拿算法
@@ -150,7 +161,7 @@ class JWT
             $this->alg = $head['alg'];
         }else{
             $this->clear();
-            return 'ALG ERROR';
+            throw new \Exception("alg error");
         }
 
         $this->dataStr = $temArr[1];
@@ -159,7 +170,7 @@ class JWT
         $this->makeSign();
         if ($temArr[2] !== $this->signStr) {
             $this->clear();
-            return 'SIGN ERROR';
+            throw new \Exception("token sign error");
         }
 
         $data = json_decode(Base64Url::decode($this->dataStr), TRUE);
@@ -168,13 +179,13 @@ class JWT
         // 在此之前不可用
         if (!empty($data['nbf']) && ($data['nbf'] > $time)){
             $this->clear();
-            return 'NOTBEFORE';
+            throw new \Exception("token not before");
         }
 
         // 是否已经过期
         if (!empty($data['exp']) && ($data['exp'] < $time)){
             $this->clear();
-            return 'EXP';
+            throw new \Exception("token exp");
         }
 
         // 返回解析数据

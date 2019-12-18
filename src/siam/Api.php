@@ -40,6 +40,18 @@ class Api
         exit;
     }
 
+    public static function send($code, $data = [], $msg = '')
+    {
+        $return = [
+            'code' => "$code",
+            'data' => (object) $data,
+            'msg'  => $msg,
+        ];
+
+        $json = json_encode($return, 256);
+
+        return $json;
+    }
     /**
      * 输出调试
      * @param $name string 标签名

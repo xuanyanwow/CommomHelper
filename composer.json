@@ -13,7 +13,10 @@
     "require": {
       "ext-json": "*",
       "ext-openssl": "*",
-      "ext-bcmath": "*"
+      "ext-bcmath": "*",
+      "ext-curl": "*",
+      "ext-simplexml": "*",
+      "ext-libxml": "*"
     },
     "autoload": {
         "psr-4": {
