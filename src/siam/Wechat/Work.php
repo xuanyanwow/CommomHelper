@@ -14,6 +14,8 @@ class Work
 {
     use Singleton;
 
+    private $lastData;
+
     private function __construct($config = [])
     {
         empty($config['key']) or $this->key = $config['key'];
@@ -176,7 +178,7 @@ class Work
             curl_close($ch);
             $openid = json_decode($res, true);
             
-            if (!isset($openid['openid])){
+            if (!isset($openid['openid'])){
                 $this->lastData = $openid;
                 return false;
             }
@@ -210,6 +212,7 @@ class Work
      * 调用get一般场景【微信回调拿到的金额转换为分单位存到数据库】  微信回调1日元 = 100分 转成分单位 乘以100
      * @param $total_fee
      * @param $fee_type
+     * @param string $type
      * @return string|int
      */
     public function checkFeeType($total_fee, $fee_type, $type = 'set')

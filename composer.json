@@ -16,7 +16,8 @@
       "ext-bcmath": "*",
       "ext-curl": "*",
       "ext-simplexml": "*",
-      "ext-libxml": "*"
+      "ext-libxml": "*",
+      "ext-xml": "*"
     },
     "autoload": {
         "psr-4": {

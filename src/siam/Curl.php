@@ -92,14 +92,17 @@ class Curl
         if (!empty($this->head)){
             curl_setopt($curl, CURLOPT_HEADER, 0);
             curl_setopt($curl, CURLOPT_HTTPHEADER, $this->head);
+            $this->setHead([]);
         }
 
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         $response = curl_exec($curl);  // 执行一个cURL会话并且获取相关回复
 
         if ($response === false) {
+            $error = curl_error($curl);
+            $errno = curl_errno($curl);
             curl_close($curl);  // 释放cURL句柄,关闭一个cURL会话
-            throw new \Exception("[". curl_errno($curl) . "]" . curl_error($curl));
+            throw new \Exception("[". $errno . "]" . $error);
         }
 
         $this->responseHead = curl_getinfo($curl);
