@@ -49,7 +49,7 @@ class Curl
      * @return mixed
      * @throws \Exception
      */
-    public function send($url, $data = null, $cert = [], $post = true)
+    public function send($url, $data = null, $cert = [], $post = true, $callable = null)
     {
         # 初始化一个cURL会话
         $curl = curl_init();
@@ -96,6 +96,11 @@ class Curl
         }
 
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+
+        // 执行自定义
+        if (!empty($callable) && is_callable($callable)){
+            call_user_func($callable, $curl);
+        }
         $response = curl_exec($curl);  // 执行一个cURL会话并且获取相关回复
 
         if ($response === false) {

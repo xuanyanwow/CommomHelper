@@ -15,6 +15,7 @@ class Work
     use Singleton;
 
     private $lastData;
+    private $key;
 
     private function __construct($config = [])
     {

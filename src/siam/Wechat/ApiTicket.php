@@ -9,6 +9,7 @@
 namespace Siam\Wechat;
 
 use Siam\Api;
+use Siam\Cache;
 use Siam\Component\Singleton;
 use Siam\Curl;
 
@@ -65,9 +66,8 @@ class ApiTicket
      */
     private function getByCache()
     {
-        if (empty($this->data['mism_appid'])) Api::json('500', [], 'mism_appid为空');
-        // $cache = Cache::tag('ticket')->get($this->data['mism_appid'] . "_ticket");
-        $cache = false;
+        if (empty($this->data['mism_appid'])) exit(Api::json('500', [], 'mism_appid为空'));
+        $cache = Cache::getInstance()->get($this->data['mism_appid'] . "_ticket");
         return $cache;
     }
 
@@ -77,7 +77,7 @@ class ApiTicket
      */
     private function getByHttp()
     {
-        if (empty($this->token)) Api::json('500', [], 'token为空');
+        if (empty($this->token)) exit(Api::json('500', [], 'token为空'));
 
         $url = str_replace("__TOKEN__", $this->token, self::$GET_TICKET);
 
@@ -85,14 +85,14 @@ class ApiTicket
         try {
             $res = $CURL->send($url);
         } catch (\Exception $e) {
-            Api::json('500', [], '请求ticket失败');
+            exit(Api::json('500', [], '请求ticket失败'));
         }
         $res  = json_decode($res, true);
 
         $ticket = $res['ticket'];
         if ($ticket) {
             $cacheName = $this->data['mism_appid'] . "_ticket";
-            // Cache::tag('ticket')->set($cacheName, $ticket, 7200);
+            Cache::getInstance()->set($cacheName, $ticket, 7200);
             return $ticket;
         }
         return false;

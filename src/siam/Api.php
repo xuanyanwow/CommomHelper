@@ -17,6 +17,7 @@ class Api
      * @param string $code
      * @param array $data
      * @param string $msg
+     * @return string
      */
     public static function json($code, $data = [], $msg = '')
     {
@@ -36,8 +37,7 @@ class Api
             # 记录log 会把所有输出的json记录起来 方便对接安卓调试
             Logger::getInstance()->log($json, "echoJson");
         }
-        echo $json;
-        exit;
+        return $json;
     }
 
     public static function send($code, $data = [], $msg = '')

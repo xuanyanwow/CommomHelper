@@ -10,6 +10,7 @@ namespace Siam\Wechat;
 
 
 use Siam\Api;
+use Siam\Cache;
 use Siam\Component\Singleton;
 use Siam\Curl;
 
@@ -66,8 +67,7 @@ class AccessToken
      */
     private function getByCache()
     {
-        // $cache = Cache::tag('token')->get($this->data['mism_appid'] . "_token");
-        $cache = false;
+        $cache = Cache::getInstance()->get($this->data['mism_appid'] . "_token");
         return $cache;
     }
 
@@ -77,8 +77,8 @@ class AccessToken
      */
     private function getByHttp()
     {
-        if (empty($this->data['mism_appid'])) Api::json('500', [], 'mism_appid为空');
-        if (empty($this->data['mism_appsecret'])) Api::json('500', [], 'mism_appsecret为空');
+        if (empty($this->data['mism_appid'])) exit(Api::json('500', [], 'mism_appid为空'));
+        if (empty($this->data['mism_appsecret'])) exit(Api::json('500', [], 'mism_appsecret为空'));
 
         $url = str_replace("__APPID__", $this->data['mism_appid'], self::$GET_TOKEN);
         $url = str_replace("__SECRET__", $this->data['mism_appsecret'], $url);
@@ -87,14 +87,14 @@ class AccessToken
         try {
             $res = $CURL->send($url);
         } catch (\Exception $e) {
-            Api::json('500', [], '请求失败');
+            exit(Api::json('500', [], '请求失败'));
         }
         $resA  = json_decode($res, true);
 
         $ticket = isset($resA['access_token']) ? $resA['access_token'] : false;
         if ($ticket) {
             $cacheName = $this->data['mism_appid'] . "_token";
-            // Cache::tag('token')->set($cacheName, $ticket, 7200);
+            Cache::getInstance()->set($cacheName, $ticket, 7200);
             return $ticket;
         }else{
             # 没有正常获取到那肯定有问题，输出提供给调试
