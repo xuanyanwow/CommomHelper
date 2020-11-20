@@ -19,9 +19,9 @@ abstract class CronBase
      */
     public function __construct()
     {
-        static::$runtimePath = dirname(__FILE__);
+        if(empty(static::$runtimePath)) static::$runtimePath = dirname(__FILE__);
         // 判断是否为单一任务 是的话停止运行
-        $lockName = static::$runtimePath.DIRECTORY_SEPARATOR.md5($this->rule()).".txt";
+        $lockName = static::$runtimePath.DIRECTORY_SEPARATOR.$this->rule().".txt";
         if ( static::$singleCron && file_exists($lockName) ){
             throw new \Exception($this->rule() . " is single cron job");
         }
@@ -42,9 +42,8 @@ abstract class CronBase
      * @throws \Throwable
      */
     public function run(){
-        $data = $this->before();
-
         try{
+            $data = $this->before();
             $res = $this->do($data);
         }catch (\Throwable $throwable){
             $this->clearClock();
@@ -74,7 +73,7 @@ abstract class CronBase
 
     private function clearClock()
     {
-        $lockName = static::$runtimePath.DIRECTORY_SEPARATOR.md5($this->rule()).".txt";
+        $lockName = static::$runtimePath.DIRECTORY_SEPARATOR.$this->rule().".txt";
         if (file_exists($lockName)){
             unlink($lockName);
         }
