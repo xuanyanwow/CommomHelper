@@ -6,6 +6,8 @@
  * Time: 17:15
  */
 
+ unlink("./siam.phar");
+
 //产生一个siam.phar文件
 $phar = new Phar('siam.phar', 0, 'siam.phar');
 // 添加src里面的所有文件到siam.phar归档文件

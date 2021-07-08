@@ -15,12 +15,12 @@ class Debug
     {
         try {
             if(is_array($funcname)) {
-                $func = new ReflectionMethod($funcname[0], $funcname[1]);
+                $func = new \ReflectionMethod($funcname[0], $funcname[1]);
                 $funcname = $funcname[1];
             } else {
-                $func = new ReflectionFunction($funcname);
+                $func = new \ReflectionFunction($funcname);
             }
-        } catch (ReflectionException $e) {
+        } catch (\ReflectionException $e) {
             echo $e->getMessage();
             return;
         }
@@ -32,7 +32,7 @@ class Debug
 
     public static function class_path()
     {
-        $reflector = new ReflectionClass("Child");
+        $reflector = new \ReflectionClass("Child");
         $fn = $reflector->getFileName();
         return $fn;
     }
@@ -112,7 +112,7 @@ class Debug
      */
     public static function getUseTime($dec = 6)
     {
-        return number_format((microtime(true) - THINK_START_TIME), $dec);
+        return number_format((microtime(true) - START_MEM), $dec);
     }
 
     /**
@@ -196,5 +196,24 @@ class Debug
         }
 
         return round($size, $dec) . " " . $a[$pos];
+    }
+
+    /**
+     * 远程日志 服务器运行信息传输
+     */
+    public static function register_remote_console($notify_url){
+        register_shutdown_function(function() use($notify_url){
+            $error = error_get_last();
+            if (empty($error)){
+                $data = [
+                    'get' => $_GET,
+                    'post' => $_POST,
+                    'session' => $_SESSION,
+                    'server' => $_SERVER,
+                    'inclued_files' => Debug::get_included_files(),
+                ];
+                $res = Curl::getInstance()->send($notify_url, $data);
+            }
+        });
     }
 }
