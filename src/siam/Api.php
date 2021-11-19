@@ -12,9 +12,7 @@ class Api
             'msg'  => $msg,
         ];
 
-        $json = json_encode($return, 256);
-
-        return $json;
+        return json_encode($return, 256);
     }
     /**
      * 输出调试

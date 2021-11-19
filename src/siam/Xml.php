@@ -10,6 +10,7 @@ namespace Siam;
 
 
 use Siam\Component\Singleton;
+use SimpleXMLElement;
 
 class Xml
 {
@@ -38,16 +39,66 @@ class Xml
         return $str;
     }
 
-
-    function xmlToArray($xml)
+    public function toArray($simpleXMLElement, $list_field_setting = []): array
     {
-        // 清理替换没有闭合标签的
-        $xml = preg_replace('/\<(\w+)\/\>/','<$1></$1>',$xml);
+        $return = [];
+        /**
+         * @var  $key
+         * @var SimpleXMLElement $value
+         */
+        foreach ($simpleXMLElement as $key => $value){
+            if ($value->count()){
+                $temp = $this->toArray($value, $list_field_setting);
+                if (in_array($key, $list_field_setting)){
+                    $return[$key][] = $temp;
+                }else{
+                    $return[$key] = $temp;
+                }
+            }else{
+                $return[$key] = $value->__toString();
+            }
+        }
+        return $return;
+    }
 
-        $object = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
-        $array  = json_decode(json_encode($object),true);
-        $array  = $this->_checkType($array);
-        return $array;
+    public function xmlToArray($xml_string, $list_identify = null, $list_field_setting = []): array
+    {
+        $list = [];
+
+        if (!$list_identify){
+            $list = $this->toArray(simplexml_load_string($xml_string), $list_field_setting);
+        }else{
+            //  加载XML内容
+            $xml_reader = new \XMLReader();
+            $xml_reader->xml($xml_string);
+            // move the pointer to the first product
+            while ($xml_reader->read() && $xml_reader->name != $list_identify);
+
+            // loop through the products
+            while ($xml_reader->name == $list_identify)
+            {
+                // load the current xml element into simplexml and we’re off and running!
+                $xml = simplexml_load_string($xml_reader->readOuterXML());
+
+                // // 读取dom和值
+                // var_dump($xml);
+                //
+                // // 读取dom的属性
+                // foreach ($xml->city->attributes() as $key => $value){
+                //     var_dump($key);
+                //     var_dump($value->__toString());
+                // }
+
+                $list[] = $this->toArray($xml, $list_field_setting);
+
+                $xml_reader->next($list_identify);
+            }
+
+            // don’t forget to close the file
+            $xml_reader->close();
+        }
+
+        return $list;
     }
 
     /**

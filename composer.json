@@ -19,7 +19,8 @@
       "ext-libxml": "*",
       "ext-xml": "*",
       "symfony/var-dumper": "5.3.3",
-        "symfony/filesystem": "5.3.3"
+        "symfony/filesystem": "5.3.3",
+      "ext-xmlreader": "*"
     },
     "autoload": {
         "psr-4": {

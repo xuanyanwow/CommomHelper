@@ -34,10 +34,10 @@ $str = <<<xml
   </BODY>
 </ROOT>
 xml;
-$object = $xml->xmlToArray($str);
+$object = $xml->xmlToArray($str,null,['PrintTicketInfo']);
 
-
-$tem =  $object->BODY->RSP2006->PrintTicketInfo[0]->TicketTypeDis->__toString();
-var_dump($tem);
-echo "\n";
-var_dump($object);
+//
+// $tem =  $object->BODY->RSP2006->PrintTicketInfo[0]->TicketTypeDis->__toString();
+// var_dump($tem);
+// echo "\n";
+// var_dump($object);
