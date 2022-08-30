@@ -50,4 +50,31 @@ class Cache implements CacheInterface
     {
         return $this->cacheDriver->has($key);
     }
+    
+    
+    /**
+     * 用于根据搜索条件构建缓存key
+     */
+    public static function buildCacheKey($pre, ...$data)
+    {
+        //     $cacheKey = buildCacheKey("test_", "123","456",["test"=>123],["test"=>["test1"=>123]]);
+        //     var_dump($cacheKey);
+        //     test_>>123>>456>>test-123>>test-{"test1":123}
+        $cacheKey = $pre;
+        foreach ($data as $item){
+            $cacheKey .= ">>";
+            if (!is_array($item)){
+                $cacheKey .= $item;
+            } else {
+                foreach ($item as $itemKey => $itemValue){
+                    if(is_array($itemValue)) $itemValue = json_encode($itemValue,256);
+                    $cacheKey .= $itemKey."-".$itemValue;
+                }
+            }
+        }
+
+        return $cacheKey;
+        
+    }
+
 }
